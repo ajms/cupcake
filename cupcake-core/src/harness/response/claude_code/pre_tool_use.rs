@@ -1,6 +1,4 @@
-use crate::harness::response::types::{
-    CupcakeResponse, EngineDecision, HookSpecificOutput, PermissionDecision,
-};
+use crate::harness::response::types::{CupcakeResponse, EngineDecision, HookSpecificOutput, PermissionDecision};
 
 /// Builder for PreToolUse hook responses
 ///
@@ -13,7 +11,6 @@ impl PreToolUseResponseBuilder {
         let mut response = CupcakeResponse::empty();
 
         // PreToolUse uses hookSpecificOutput with permissionDecision for non-Allow decisions
-        // For Allow, we return empty response to let Claude use its own permission settings
         match decision {
             EngineDecision::Allow { .. } => {
                 // Return empty response for passthrough - let Claude use its own permission settings

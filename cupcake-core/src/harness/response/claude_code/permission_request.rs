@@ -39,7 +39,6 @@ impl PermissionRequestResponseBuilder {
         let mut response = CupcakeResponse::empty();
 
         // PermissionRequest uses hookSpecificOutput with nested decision object for non-Allow decisions
-        // For Allow, we return empty response to let Claude use its own permission settings
         match decision {
             EngineDecision::Allow { .. } => {
                 // Return empty response for passthrough - let Claude use its own permission settings

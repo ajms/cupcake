@@ -44,6 +44,8 @@ pub enum PermissionMode {
     Plan,
     /// Accept edits mode - file edits are auto-approved
     AcceptEdits,
+    /// Auto mode - Claude works autonomously within configured guardrails
+    Auto,
     /// Bypass permissions - all tool calls auto-approved (dangerous)
     BypassPermissions,
 }
@@ -54,6 +56,7 @@ impl std::fmt::Display for PermissionMode {
             PermissionMode::Default => write!(f, "default"),
             PermissionMode::Plan => write!(f, "plan"),
             PermissionMode::AcceptEdits => write!(f, "acceptEdits"),
+            PermissionMode::Auto => write!(f, "auto"),
             PermissionMode::BypassPermissions => write!(f, "bypassPermissions"),
         }
     }
@@ -562,5 +565,22 @@ mod tests {
             tool_use_id: None,
         });
         assert!(!post_tool.is_permission_event());
+    }
+
+    #[test]
+    fn test_permission_mode_auto() {
+        let event: ClaudeCodeEvent = serde_json::from_value(serde_json::json!({
+            "hook_event_name": "PreToolUse",
+            "session_id": "test",
+            "transcript_path": "/path",
+            "cwd": "/home",
+            "permission_mode": "auto",
+            "tool_name": "Bash",
+            "tool_input": {"command": "ls"}
+        }))
+        .expect("auto permission mode must deserialize");
+
+        assert_eq!(*event.permission_mode(), PermissionMode::Auto);
+        assert_eq!(event.permission_mode().to_string(), "auto");
     }
 }
